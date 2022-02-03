@@ -5,9 +5,10 @@ The same thing as [`jmalloc/echo-server`](https://github.com/jmalloc/echo-server
 *Particularly useful for http request smuggling vulnerability research*
 
 ```shell
-httpecho
+$ httpecho
+
 # On another shell
-curl -d "param1=value1&param2=value2" -X POST http://localhost:8888/ -H "Transfer-Encoding: chunked" -H "Content-Length: 8"
+$ curl -d "param1=value1&param2=value2" -X POST http://localhost:8888/ -H "Transfer-Encoding: chunked" -H "Content-Length: 8"
 POST / HTTP/1.1
 Host: localhost:8888
 User-Agent: curl/7.58.0
