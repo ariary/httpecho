@@ -13,7 +13,7 @@ import (
 
 const usage = `Usage of httpecho: echo server accepting malformed HTTP request
   -s --serve serve continuously (default: wait for 1 request)
-  -t, --timeout timeout to close connection. Needed for closing http request. (default: 1)
+  -t, --timeout timeout to close connection in millisecond. Needed for closing http request. (default: 500)
   -d, --dump dump incoming request to a file (default: only print to stdout)
   -p, --port listening on specific port (default: 8888)
   -h, --help dump incoming request to a file (default: only print to stdout) 
@@ -27,8 +27,8 @@ func main() {
 
 	// -t
 	var timeout int
-	flag.IntVar(&timeout, "timeout", 1, "Timeout to close connection. Needed for closing http request. (default: 1)")
-	flag.IntVar(&timeout, "t", 1, "Timeout to close connection. Needed for closing http request. (default: 1)")
+	flag.IntVar(&timeout, "timeout", 200, "Timeout to close connection. Needed for closing http request. (default: 200)")
+	flag.IntVar(&timeout, "t", 200, "Timeout to close connection. Needed for closing http request. (default: 200)")
 
 	//-d
 	var dump string
@@ -71,7 +71,7 @@ func main() {
 		defer ln.Close()
 
 		conn, err := ln.Accept()
-		conn.SetDeadline(time.Now().Add(time.Duration(timeout) * time.Second)) //close http request
+		conn.SetDeadline(time.Now().Add(time.Duration(timeout) * time.Millisecond)) //close http request
 		if err != nil {
 			log.Println(err)
 		}
@@ -97,6 +97,20 @@ func handleConnection(conn net.Conn, dump string) {
 
 	}
 	r := bufio.NewReader(conn)
+
+	go func() { //handle packet without '\n' ending character
+		time.Sleep(time.Duration(100) * time.Millisecond)
+		fmt.Println("buffered", r.Buffered())
+		residue, err := r.Peek(r.Buffered())
+		if err != nil {
+			log.Println(err)
+		}
+		n, err := conn.Write(residue)
+		if err != nil {
+			log.Println(n, err)
+			return
+		}
+	}()
 
 	for {
 		msg, err := r.ReadString('\n')
