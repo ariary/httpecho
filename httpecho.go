@@ -59,7 +59,8 @@ func main() {
 			if err != nil {
 				log.Println(err)
 			}
-			go handleConnection(conn, dump)
+			//fmt.Println("-----------------")
+			go handleConnection(conn, dump, timeout)
 		}
 
 	} else { //only 1 time
@@ -71,16 +72,16 @@ func main() {
 		defer ln.Close()
 
 		conn, err := ln.Accept()
-		conn.SetDeadline(time.Now().Add(time.Duration(timeout) * time.Millisecond)) //close http request
+		//conn.SetDeadline(time.Now().Add(time.Duration(timeout) * time.Millisecond)) //close http request
 		if err != nil {
 			log.Println(err)
 		}
-		handleConnection(conn, dump)
+		handleConnection(conn, dump, timeout)
 	}
 
 }
 
-func handleConnection(conn net.Conn, dump string) {
+func handleConnection(conn net.Conn, dump string, timeout int) {
 	defer conn.Close()
 	writeFile := false
 	var request string
@@ -99,7 +100,7 @@ func handleConnection(conn net.Conn, dump string) {
 	r := bufio.NewReader(conn)
 
 	go func() { //handle packet without '\n' ending character
-		time.Sleep(time.Duration(100) * time.Millisecond)
+		time.Sleep(time.Duration(timeout) * time.Millisecond)
 		residue, err := r.Peek(r.Buffered())
 		if err != nil {
 			log.Println(err)
@@ -109,6 +110,7 @@ func handleConnection(conn net.Conn, dump string) {
 			log.Println(n, err)
 			return
 		}
+		conn.Close()
 	}()
 
 	for {
@@ -121,7 +123,7 @@ func handleConnection(conn net.Conn, dump string) {
 		}
 		//handle read error
 		if err != nil {
-			if !strings.Contains(err.Error(), "timeout") { //avoid timeout error
+			if !strings.Contains(err.Error(), "timeout") && !strings.Contains(err.Error(), "closed network connection") { //avoid timeout error
 				log.Println(err)
 			}
 			if writeFile { //Write request received in file
