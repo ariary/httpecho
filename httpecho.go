@@ -100,7 +100,6 @@ func handleConnection(conn net.Conn, dump string) {
 
 	go func() { //handle packet without '\n' ending character
 		time.Sleep(time.Duration(100) * time.Millisecond)
-		fmt.Println("buffered", r.Buffered())
 		residue, err := r.Peek(r.Buffered())
 		if err != nil {
 			log.Println(err)
