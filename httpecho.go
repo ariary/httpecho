@@ -100,7 +100,13 @@ func handleConnection(conn net.Conn, dump string) {
 
 	for {
 		msg, err := r.ReadString('\n')
+		//print log
 		fmt.Print(msg)
+		//write to file
+		if writeFile {
+			request += msg
+		}
+		//handle read error
 		if err != nil {
 			if !strings.Contains(err.Error(), "timeout") { //avoid timeout error
 				log.Println(err)
@@ -121,11 +127,6 @@ func handleConnection(conn net.Conn, dump string) {
 			}
 
 			return
-		}
-
-
-		if writeFile {
-			request += msg
 		}
 
 		n, err := conn.Write([]byte(msg))
