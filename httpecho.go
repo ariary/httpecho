@@ -14,7 +14,7 @@ import (
 )
 
 const usage = `Usage of httpecho: echo server accepting malformed HTTP request
-  -s --serve      serve continuously (default: wait for 1 request)
+  -s, --serve     serve continuously (default: wait for 1 request)
   -t, --timeout   timeout to close connection in millisecond. Needed for closing http request. (default: 500)
   -d, --dump      dump incoming request to a file (default: only print to stdout)
   -p, --port      listening on specific port (default: 8888)
