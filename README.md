@@ -31,11 +31,12 @@ param1=value1&param2=value2
 ## Usage
 ```shell
 Usage of httpecho: echo server accepting malformed HTTP request
-  -s --serve serve continuously (default: wait for 1 request)
-  -t, --timeout timeout to close connection in millisecond. Needed for closing http request. (default: 500)
-  -d, --dump dump incoming request to a file (default: only print to stdout)
-  -p, --port listening on specific port (default: 8888)
-  -h, --help dump incoming request to a file (default: only print to stdout)
+  -s --serve      serve continuously (default: wait for 1 request)
+  -t, --timeout   timeout to close connection in millisecond. Needed for closing http request. (default: 500)
+  -d, --dump      dump incoming request to a file (default: only print to stdout)
+  -p, --port      listening on specific port (default: 8888)
+  --tls           use TLS encryption for communication
+  -h, --help      dump incoming request to a file (default: only print to stdout)
 ```
 
 ## Install
