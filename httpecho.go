@@ -118,11 +118,11 @@ func handleConnection(conn net.Conn, dump string, timeout int) {
 	go func() { //handle packet without '\n' ending character
 		time.Sleep(time.Duration(timeout) * time.Millisecond)
 		residue, err := r.Peek(r.Buffered())
-		if err != nil {
+		if err != nil && err != io.EOF {
 			log.Println(err)
 		}
 		n, err := conn.Write(residue)
-		if err != nil {
+		if err != nil && err != io.EOF {
 			log.Println(n, err)
 			return
 		}
