@@ -1,7 +1,7 @@
 # httpecho
 
 <div align=center>
-<img src=https://github.com/ariary/httpecho/blob/main/827F3A4B-D81D-4C60-AF03-BB23694E6C97.png width=150>
+<img src=https://github.com/ariary/httpecho/blob/main/logo.png width=150>
 </div>
 <br>
 
@@ -25,8 +25,6 @@ Content-Type: application/x-www-form-urlencoded
 1b
 param1=value1&param2=value2
 0
-
-# Eventually add --http0.9 flag to curl cmd
 ```
 
 ## Usage
