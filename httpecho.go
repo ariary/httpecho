@@ -92,6 +92,7 @@ func main() {
 		if err != nil {
 			log.Println(err)
 		}
+
 		handleConnection(conn, dump, timeout)
 	}
 
@@ -99,6 +100,12 @@ func main() {
 
 func handleConnection(conn net.Conn, dump string, timeout int) {
 	defer conn.Close()
+	//HTTP1.1 OK!
+	n, err := conn.Write([]byte("HTTP/1.1 200 OK\n\n"))
+	if err != nil {
+		log.Println(n, err)
+		return
+	}
 	writeFile := false
 	var request string
 
