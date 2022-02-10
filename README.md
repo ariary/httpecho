@@ -26,6 +26,7 @@ Content-Type: application/x-www-form-urlencoded
 param1=value1&param2=value2
 0
 
+# Eventually add --http0.9 flag to curl cmd
 ```
 
 ## Usage
