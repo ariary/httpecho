@@ -7,7 +7,7 @@
 
 The same thing as [`jmalloc/echo-server`](https://github.com/jmalloc/echo-server) **but HTTP requests are echoed as they are received**.
 
-*Particularly useful for [http request smuggling vulnerability research](https://github.com/ariary/HTTPCustomHouse)*
+*Particularly useful for [http request smuggling vulnerability research](https://github.com/ariary/HTTPCustomHouse), HTTP malformed requests etc*
 
 ```shell
 $ httpecho
@@ -34,8 +34,9 @@ Usage of httpecho: echo server accepting malformed HTTP request
   -t, --timeout   timeout to close connection in millisecond. Needed for closing http request. (default: 500)
   -d, --dump      dump incoming request to a file (default: only print to stdout)
   -p, --port      listening on specific port (default: 8888)
+  -v, --verbose	  display request with special characters
   --tls           use TLS encryption for communication
-  -h, --help      dump incoming request to a file (default: only print to stdout)
+  -h, --help      dump incoming request to a file (default: only print to stdout) 
 ```
 
 ## Install
