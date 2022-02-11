@@ -11,6 +11,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/ariary/HTTPCustomHouse/pkg/utils"
 )
 
 const usage = `Usage of httpecho: echo server accepting malformed HTTP request
@@ -18,9 +20,12 @@ const usage = `Usage of httpecho: echo server accepting malformed HTTP request
   -t, --timeout   timeout to close connection in millisecond. Needed for closing http request. (default: 500)
   -d, --dump      dump incoming request to a file (default: only print to stdout)
   -p, --port      listening on specific port (default: 8888)
+  -v, --verbose	  display request with special characters
   --tls           use TLS encryption for communication
   -h, --help      dump incoming request to a file (default: only print to stdout) 
 `
+
+var verbose bool
 
 func main() {
 	//-s
@@ -46,6 +51,10 @@ func main() {
 	//--tls
 	var encrypted bool
 	flag.BoolVar(&encrypted, "tls", false, "Use TLS encryption for communication")
+
+	//-v,--verbose
+	flag.BoolVar(&verbose, "verbose", false, "Display request with special characters")
+	flag.BoolVar(&verbose, "v", false, "Display request with special characters")
 
 	flag.Usage = func() { fmt.Print(usage) }
 	flag.Parse()
@@ -139,7 +148,14 @@ func handleConnection(conn net.Conn, dump string, timeout int) {
 	for {
 		msg, err := r.ReadString('\n')
 		//print log
-		fmt.Print(msg)
+		if verbose {
+			msgDebug := strings.ReplaceAll(string(msg), "\r", utils.Green("\\r"))
+			msgDebug = strings.ReplaceAll(string(msgDebug), "\n", utils.Green("\\n\n"))
+			fmt.Print(msgDebug)
+		} else {
+			fmt.Print(msg)
+		}
+
 		//write to file
 		if writeFile {
 			request += msg
