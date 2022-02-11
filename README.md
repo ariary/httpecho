@@ -1,7 +1,7 @@
 # httpecho
 
 <div align=center>
-<img src=https://github.com/ariary/httpecho/blob/main/logo.png width=150>
+<img src=https://github.com/ariary/httpecho/blob/main/logo-httpecho.png width=150>
 </div>
 <br>
 
