@@ -7,7 +7,7 @@
 
 The same thing as [`jmalloc/echo-server`](https://github.com/jmalloc/echo-server) **but HTTP requests are echoed as they are received**.
 
-*Particularly useful for [http request smuggling vulnerability research](https://github.com/ariary/HTTPCustomHouse), HTTP malformed requests etc*
+*Particularly useful for [http request smuggling vulnerability research](https://github.com/ariary/HTTPCustomHouse), malformed HTTP requests etc*
 
 ```shell
 $ httpecho
