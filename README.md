@@ -36,7 +36,7 @@ Usage of httpecho: echo server accepting malformed HTTP request
   -p, --port      listening on specific port (default: 8888)
   -v, --verbose	  display request with special characters
   --tls           use TLS encryption for communication
-  -h, --help      dump incoming request to a file (default: only print to stdout) 
+  -h, --help      help information 
 ```
 
 ## Install
