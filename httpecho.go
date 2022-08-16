@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"crypto/tls"
-	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -12,54 +11,40 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ariary/HTTPCustomHouse/pkg/utils"
+	"github.com/ariary/go-utils/pkg/color"
+	"github.com/ariary/quicli/pkg/quicli"
 )
-
-const usage = `Usage of httpecho: echo server accepting malformed HTTP request
-  -s, --serve     serve continuously (default: wait for 1 request)
-  -t, --timeout   timeout to close connection in millisecond. Needed for closing http request. (default: 500)
-  -d, --dump      dump incoming request to a file (default: only print to stdout)
-  -p, --port      listening on specific port (default: 8888)
-  -v, --verbose	  display request with special characters
-  --tls           use TLS encryption for communication
-  -h, --help      dump incoming request to a file (default: only print to stdout) 
-`
 
 var verbose bool
 
 func main() {
-	//-s
-	var serve bool
-	flag.BoolVar(&serve, "serve", false, "Serve continuously (default: wait for 1 request)")
-	flag.BoolVar(&serve, "s", false, "Serve continuously (default: wait for 1 request)")
-
-	// -t
-	var timeout int
-	flag.IntVar(&timeout, "timeout", 200, "Timeout to close connection. Needed for closing http request. (default: 200)")
-	flag.IntVar(&timeout, "t", 200, "Timeout to close connection. Needed for closing http request. (default: 200)")
-
-	//-d
-	var dump string
-	flag.StringVar(&dump, "dump", "", "Dump incoming request to a file (default: only print to stdout)")
-	flag.StringVar(&dump, "d", "", "Dump incoming request to a file (default: only print to stdout)")
-
-	//-p
-	var port string
-	flag.StringVar(&port, "port", "8888", "Listening on specific port (default: 8888)")
-	flag.StringVar(&port, "p", "8888", "Listening on specific port (default: 8888)")
-
-	//--tls
-	var encrypted bool
-	flag.BoolVar(&encrypted, "tls", false, "Use TLS encryption for communication")
-
-	//-v,--verbose
-	flag.BoolVar(&verbose, "verbose", false, "Display request with special characters")
-	flag.BoolVar(&verbose, "v", false, "Display request with special characters")
-
-	flag.Usage = func() { fmt.Print(usage) }
-	flag.Parse()
 	log.SetFlags(log.Lshortfile)
 
+	cli := quicli.Cli{
+		Usage:       "httpecho [flags]",
+		Description: "Echo server accepting malformed HTTP request",
+		Flags: quicli.Flags{
+			{Name: "serve", Description: "Serve continuously. If not only wait for 1 request"},
+			{Name: "timeout", Default: 200, Description: "Timeout to close connection. Needed for closing http request."},
+			{Name: "dump", Default: "", Description: "Dump incoming request to a file. If not used then print to stdout"},
+			{Name: "port", Default: "8888", Description: "Listening on specific port"},
+			{Name: "tls", Description: "Use TLS encryption for communication"},
+			{Name: "verbose", Description: "Display request with special characters"},
+		},
+		CheatSheet: quicli.Examples{
+			{Title: "Quicly register a request", CommandLine: "httpecho -d request"},
+			{Title: "Wait request indefinitely", CommandLine: "httpecho -s"},
+			{Title: "Observe special characters in request", CommandLine: "httpecho -v"},
+		},
+	}
+	cfg := cli.Parse()
+
+	serve := cfg.GetBoolFlag("serve")
+	timeout := cfg.GetIntFlag("timeout")
+	dump := cfg.GetStringFlag("dump")
+	port := cfg.GetStringFlag("port")
+	encrypted := cfg.GetBoolFlag("tls")
+	verbose = cfg.GetBoolFlag("verbose")
 	port = ":" + port
 
 	var ln net.Listener
@@ -149,8 +134,8 @@ func handleConnection(conn net.Conn, dump string, timeout int) {
 		msg, err := r.ReadString('\n')
 		//print log
 		if verbose {
-			msgDebug := strings.ReplaceAll(string(msg), "\r", utils.Green("\\r"))
-			msgDebug = strings.ReplaceAll(string(msgDebug), "\n", utils.Green("\\n\n"))
+			msgDebug := strings.ReplaceAll(string(msg), "\r", color.Green("\\r"))
+			msgDebug = strings.ReplaceAll(string(msgDebug), "\n", color.Green("\\n\n"))
 			fmt.Print(msgDebug)
 		} else {
 			fmt.Print(msg)
